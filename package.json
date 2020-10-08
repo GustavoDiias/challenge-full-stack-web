@@ -4,7 +4,7 @@
   "description": "GrupoA Educação - Full Stack Web Developer\r ===================",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon src/index.js"
   },
   "repository": {
     "type": "git",
@@ -13,9 +13,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "scripts": {
-    "start": "nodemon src/index.js"
-  },
   "bugs": {
     "url": "https://github.com/GustavoDiias/challenge-full-stack-web/issues"
   },
@@ -25,6 +22,12 @@
     "express": "^4.17.1",
     "fs": "^0.0.1-security",
     "nodemon": "^2.0.4",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "pg": "^8.4.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.3.5"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }
