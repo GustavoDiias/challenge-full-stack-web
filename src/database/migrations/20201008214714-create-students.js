@@ -2,11 +2,15 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable('student', {
-      ra: {
+    return queryInterface.createTable('students', {
+      id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        unique: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
+      ra: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       name: {
@@ -16,12 +20,10 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       cpf: {
         type: Sequelize.BIGINT,
         allowNull: false,
-        unique: true,
       },
       created_at: {
         type: Sequelize.DATE,
