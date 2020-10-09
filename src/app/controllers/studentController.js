@@ -26,11 +26,19 @@ router.post('/create', async (req, res) => {
 
     try {
 
+        const unique = await Student.findOne({ where: { ra: ra } }).then((doc) => {
+            return doc;
+        })
+
+        if (unique)
+            return res.status(400).send({ error: 'Ra já existente' });
+
         const student = await Student.create({ ra, name, email, cpf });
 
         return res.json(student);
 
     } catch (err) {
+        console.log(err);
         return res.status(400).send({ error: 'Erro ao cadastrar novo estudante' });
     }
 });
