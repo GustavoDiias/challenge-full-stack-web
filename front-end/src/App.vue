@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <Header />
     <v-content>
       <v-container>
         <v-router-view></v-router-view>
@@ -9,5 +10,8 @@
 </template>
 
 <script>
-export default {};
+import Header from "./components/Header";
+export default {
+  components: { Header },
+};
 </script>
