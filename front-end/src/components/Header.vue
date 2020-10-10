@@ -1,27 +1,33 @@
 <template>
-  <v-app id="inspire">
-    <v-card color="grey lighten-4" flat height="20px" tile>
-      <v-toolbar dense>
-        <v-toolbar-title class="headline text-uppercase mr-4">
-          <span>
-            <v-img
-              max-height="100"
-              max-width="100"
-              src="../assets/grupoa.png"
-            ></v-img>
-          </span>
-          <span></span>
-        </v-toolbar-title>
-        <v-toolbar-items>
-          <v-btn flat to="/">Início</v-btn>
-          <v-btn flat to="/students">Lista de Estudantes</v-btn>
-          <v-btn flat to="/forms">Cadastrar Estudantes</v-btn>
-        </v-toolbar-items>
+  <v-card color="grey lighten-4" flat height="70px" tile>
+    <v-toolbar dense>
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-        <v-spacer></v-spacer>
-      </v-toolbar>
-    </v-card>
-  </v-app>
+      <v-toolbar-title class="headline text-uppercase mr-4">
+        <span>Teste </span>
+        <span>Grupo A</span>
+      </v-toolbar-title>
+
+      <v-toolbar-items>
+        <v-btn flat to="/">Início</v-btn>
+        <v-btn flat to="/forms">Cadastrar Alunos</v-btn>
+      </v-toolbar-items>
+
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-dots-vertical</v-icon>
+      </v-btn>
+    </v-toolbar>
+  </v-card>
 </template>
 
 <script>
