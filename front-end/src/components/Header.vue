@@ -10,7 +10,6 @@
 
       <v-toolbar-items>
         <v-btn flat to="/">Início</v-btn>
-        <v-btn flat to="/forms">Cadastrar Alunos</v-btn>
       </v-toolbar-items>
 
       <v-spacer></v-spacer>

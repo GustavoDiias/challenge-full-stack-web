@@ -10,46 +10,97 @@
         <v-toolbar-title>Alunos Cadastrados</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Cadastrar Novo Aluno
-            </v-btn>
+
+        <div>
+          <template>
+            <v-dialog v-model="dialogCreate" max-width="500px">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  dark
+                  class="mb-2"
+                  v-bind="attrs"
+                  v-on="on"
+                  >Cadastrar Aluno</v-btn
+                >
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Cadastrar Alunos</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field label="Ra"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field label="Nome"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field label="Email"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field label="CPF"></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close">
+                    Cancelar
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="save">
+                    Salvar</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </template>
+        </div>
 
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+        <div>
+          <template>
+            <v-dialog v-model="dialog" max-width="500px">
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Editar Aluno</span>
+                </v-card-title>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.name"
-                      label="Nome"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.email"
-                      label="Email"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.name"
+                          label="Nome"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.email"
+                          label="Email"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
-                Cancelar
-              </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Salvar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close">
+                    Cancelar
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="save">
+                    Salvar</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </template>
+        </div>
+
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="headline"
@@ -92,6 +143,7 @@ export default {
   },
   data: () => ({
     dialog: false,
+    dialogCreate: false,
     dialogDelete: false,
     headers: [
       {
@@ -108,11 +160,8 @@ export default {
     desserts: [],
     editedIndex: -1,
     editedItem: {
-      id: 0,
-      ra: 0,
       name: "",
       email: "",
-      cpf: 0,
     },
     defaultItem: {
       id: 0,
@@ -122,11 +171,6 @@ export default {
       cpf: 0,
     },
   }),
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "Novo Aluno" : "Editar Aluno";
-    },
-  },
   watch: {
     dialog(val) {
       val || this.close();
