@@ -16,6 +16,7 @@
               Cadastrar Novo Aluno
             </v-btn>
           </template>
+
           <v-card>
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
@@ -26,13 +27,13 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.calories"
+                      v-model="editedItem.name"
                       label="Nome"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.fat"
+                      v-model="editedItem.email"
                       label="Email"
                     ></v-text-field>
                   </v-col>
@@ -45,7 +46,7 @@
               <v-btn color="blue darken-1" text @click="close">
                 Cancelar
               </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Salvar </v-btn>
+              <v-btn color="blue darken-1" text @click="save"> Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -72,14 +73,23 @@
       <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
     </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
-    </template>
   </v-data-table>
 </template>
 
 <script>
+import api from "../plugins/axios";
+
 export default {
+  mounted() {
+    api
+      .get("/")
+      .then((res) => {
+        this.desserts = res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -93,17 +103,19 @@ export default {
       { text: "Nome", value: "name" },
       { text: "Email", value: "email" },
       { text: "CPF", value: "cpf" },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "Ações", value: "actions", sortable: false },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {
+      id: 0,
       ra: 0,
       name: "",
       email: "",
       cpf: 0,
     },
     defaultItem: {
+      id: 0,
       ra: 0,
       name: "",
       email: "",
@@ -127,52 +139,6 @@ export default {
     this.initialize();
   },
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          ra: 1,
-          name: "Gustavo",
-          email: "ghenrik@hotmail.com",
-          cpf: 0,
-        },
-        {
-          ra: 2,
-          name: "Wender",
-          email: "Wender@hotmail.com",
-          cpf: 0,
-        },
-        {
-          ra: 3,
-          name: "LeoGado",
-          email: "LeoGado24@hotmail.com",
-          cpf: 0,
-        },
-        {
-          ra: 4,
-          name: "Seu Natheiso",
-          email: "dinheirista@hotmail.com",
-          cpf: 0,
-        },
-        {
-          ra: 5,
-          name: "Matheus",
-          email: "fone@hotmail.com",
-          cpf: 0,
-        },
-        {
-          ra: 6,
-          name: "Alex",
-          email: "dota@hotmail.com",
-          cpf: 0,
-        },
-        {
-          ra: 7,
-          name: "Lucas",
-          email: "LucasS2Mathones@hotmail.com",
-          cpf: 0,
-        },
-      ];
-    },
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -186,6 +152,8 @@ export default {
     deleteItemConfirm() {
       this.desserts.splice(this.editedIndex, 1);
       this.closeDelete();
+      const id = this.editedItem.id;
+      api.delete("/delete/" + id);
     },
     close() {
       this.dialog = false;
