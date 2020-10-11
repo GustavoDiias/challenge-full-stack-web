@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
+    :items="students"
     sort-by="ra"
     class="elevation-1"
   >
@@ -32,25 +32,35 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field label="Ra"></v-text-field>
+                        <v-text-field
+                          v-model="student.ra"
+                          label="Ra"
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field label="Nome"></v-text-field>
+                        <v-text-field
+                          v-model="student.nome"
+                          label="Nome"
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field label="Email"></v-text-field>
+                        <v-text-field
+                          v-model="student.email"
+                          label="Email"
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field label="CPF"></v-text-field>
+                        <v-text-field
+                          v-model="student.cpf"
+                          label="CPF"
+                        ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">
-                    Cancelar
-                  </v-btn>
+                  <v-btn color="blue darken-1" text> Cancelar </v-btn>
                   <v-btn color="blue darken-1" text @click="save">
                     Salvar</v-btn
                   >
@@ -62,7 +72,7 @@
 
         <div>
           <template>
-            <v-dialog v-model="dialog" max-width="500px">
+            <v-dialog v-model="dialogEdit" max-width="500px">
               <v-card>
                 <v-card-title>
                   <span class="headline">Editar Aluno</span>
@@ -72,16 +82,10 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.name"
-                          label="Nome"
-                        ></v-text-field>
+                        <v-text-field label="Nome"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.email"
-                          label="Email"
-                        ></v-text-field>
+                        <v-text-field label="Email"></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -89,12 +93,8 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">
-                    Cancelar
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="save">
-                    Salvar</v-btn
-                  >
+                  <v-btn color="blue darken-1" text> Cancelar </v-btn>
+                  <v-btn color="blue darken-1" text> Salvar</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -103,17 +103,11 @@
 
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="headline"
-              >Você tem certeza que vai apagar este Aluno?</v-card-title
-            >
+            <v-card-title class="headline">Apagar este aluno?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancelar</v-btn
-              >
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                >OK</v-btn
-              >
+              <v-btn color="blue darken-1" text>Cancelar</v-btn>
+              <v-btn color="blue darken-1" text>OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -121,8 +115,8 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+      <v-icon small class="mr-2"> mdi-pencil </v-icon>
+      <v-icon small> mdi-delete </v-icon>
     </template>
   </v-data-table>
 </template>
@@ -135,15 +129,15 @@ export default {
     api
       .get("/")
       .then((res) => {
-        this.desserts = res.data;
+        this.students = res.data;
       })
       .catch((err) => {
         console.log(err);
       });
   },
   data: () => ({
-    dialog: false,
     dialogCreate: false,
+    dialogEdit: false,
     dialogDelete: false,
     headers: [
       {
@@ -157,23 +151,20 @@ export default {
       { text: "CPF", value: "cpf" },
       { text: "Ações", value: "actions", sortable: false },
     ],
-    desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      name: "",
+    students: [],
+    student: {
+      ra: "",
+      nome: "",
       email: "",
-    },
-    defaultItem: {
-      id: 0,
-      ra: 0,
-      name: "",
-      email: "",
-      cpf: 0,
+      cpf: "",
     },
   }),
   watch: {
-    dialog(val) {
-      val || this.close();
+    dialogCreate(val) {
+      val || this.closeCreate();
+    },
+    dialogEdit(val) {
+      val || this.closeEdit();
     },
     dialogDelete(val) {
       val || this.closeDelete();
@@ -183,43 +174,20 @@ export default {
     this.initialize();
   },
   methods: {
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-    deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
-      const id = this.editedItem.id;
-      api.delete("/delete/" + id);
-    },
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
-      }
-      this.close();
+      api
+        .post("/create", {
+          ra: this.student.ra,
+          name: this.student.name,
+          email: this.student.email,
+          cpf: this.student.cpf,
+        })
+        .then((res) => {
+          alert("Salvo com sucesso!");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
