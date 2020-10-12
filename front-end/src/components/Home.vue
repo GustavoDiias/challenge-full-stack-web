@@ -31,27 +31,31 @@
                 <v-card-text>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12">
                         <v-text-field
                           v-model="student.ra"
+                          :rules="rules"
                           label="Ra"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12">
                         <v-text-field
-                          v-model="student.nome"
+                          v-model="student.name"
+                          :rules="rules"
                           label="Nome"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12">
                         <v-text-field
                           v-model="student.email"
+                          :rules="rules"
                           label="Email"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12">
                         <v-text-field
                           v-model="student.cpf"
+                          :rules="rules"
                           label="CPF"
                         ></v-text-field>
                       </v-col>
@@ -60,8 +64,14 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text> Cancelar </v-btn>
-                  <v-btn color="blue darken-1" text @click="save">
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="dialogCreate = false"
+                  >
+                    Cancelar
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="saveCreate">
                     Salvar</v-btn
                   >
                 </v-card-actions>
@@ -81,11 +91,19 @@
                 <v-card-text>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field label="Nome"></v-text-field>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="Nome"
+                          :rules="rules"
+                          v-model="student.name"
+                        ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field label="Email"></v-text-field>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="Email"
+                          :rules="rules"
+                          v-model="student.email"
+                        ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -93,8 +111,12 @@
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text> Cancelar </v-btn>
-                  <v-btn color="blue darken-1" text> Salvar</v-btn>
+                  <v-btn color="blue darken-1" text @click="dialogEdit = false">
+                    Cancelar
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="saveEdit">
+                    Salvar</v-btn
+                  >
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -103,11 +125,15 @@
 
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="headline">Apagar este aluno?</v-card-title>
+            <v-card-title class="justify-center"
+              >Apagar este aluno?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text>Cancelar</v-btn>
-              <v-btn color="blue darken-1" text>OK</v-btn>
+              <v-btn color="blue darken-1" text @click="dialogDelete = false"
+                >Cancelar</v-btn
+              >
+              <v-btn color="blue darken-1" text @click="saveDelete">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -115,8 +141,8 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2"> mdi-pencil </v-icon>
-      <v-icon small> mdi-delete </v-icon>
+      <v-icon small class="mr-2" @click="openEdit(item)"> mdi-pencil </v-icon>
+      <v-icon small @click="openDeleted(item)"> mdi-delete </v-icon>
     </template>
   </v-data-table>
 </template>
@@ -126,14 +152,7 @@ import api from "../plugins/axios";
 
 export default {
   mounted() {
-    api
-      .get("/")
-      .then((res) => {
-        this.students = res.data;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.fetchItems();
   },
   data: () => ({
     dialogCreate: false,
@@ -153,28 +172,27 @@ export default {
     ],
     students: [],
     student: {
+      id: "",
       ra: "",
-      nome: "",
+      name: "",
       email: "",
       cpf: "",
     },
+    rules: [(value) => !!value || "Required."],
   }),
-  watch: {
-    dialogCreate(val) {
-      val || this.closeCreate();
-    },
-    dialogEdit(val) {
-      val || this.closeEdit();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
-  created() {
-    this.initialize();
-  },
+  watch: {},
   methods: {
-    save() {
+    fetchItems() {
+      return api
+        .get("/")
+        .then((res) => {
+          this.students = res.data;
+        })
+        .catch((err) => {
+          alert("erro:" + err);
+        });
+    },
+    saveCreate() {
       api
         .post("/create", {
           ra: this.student.ra,
@@ -183,10 +201,49 @@ export default {
           cpf: this.student.cpf,
         })
         .then((res) => {
+          this.dialogCreate = false;
           alert("Salvo com sucesso!");
+          this.fetchItems();
         })
         .catch((err) => {
-          console.log(err);
+          alert("erro:" + err);
+        });
+    },
+    openEdit(item) {
+      this.dialogEdit = true;
+      this.student.id = item.id;
+      this.student.name = item.name;
+      this.student.email = item.email;
+    },
+    saveEdit() {
+      api
+        .put("/update/" + this.student.id, {
+          name: this.student.name,
+          email: this.student.email,
+        })
+        .then((res) => {
+          this.dialogEdit = false;
+          alert("Editado com sucesso!");
+          this.fetchItems();
+        })
+        .catch((err) => {
+          alert("erro:" + err);
+        });
+    },
+    openDeleted(item) {
+      this.dialogDelete = true;
+      this.student.id = item.id;
+    },
+    saveDelete() {
+      api
+        .delete("/delete/" + this.student.id)
+        .then((res) => {
+          this.dialogDelete = false;
+          alert("Deletado com sucesso!");
+          this.fetchItems();
+        })
+        .catch((err) => {
+          alert("erro:" + err);
         });
     },
   },

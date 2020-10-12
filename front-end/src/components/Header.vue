@@ -9,7 +9,7 @@
       </v-toolbar-title>
 
       <v-toolbar-items>
-        <v-btn flat to="/">Início</v-btn>
+        <v-btn text to="/">Início</v-btn>
       </v-toolbar-items>
 
       <v-spacer></v-spacer>
