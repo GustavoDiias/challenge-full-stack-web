@@ -26,7 +26,7 @@
               </template>
               <v-card>
                 <v-card-title>
-                  <span class="headline">Cadastrar Alunos</span>
+                  <span class="headline">Cadastro do Aluno</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -67,7 +67,10 @@
                   <v-btn
                     color="blue darken-1"
                     text
-                    @click="dialogCreate = false"
+                    @click="
+                      clearFields();
+                      dialogCreate = false;
+                    "
                   >
                     Cancelar
                   </v-btn>
@@ -93,6 +96,13 @@
                     <v-row>
                       <v-col cols="12">
                         <v-text-field
+                          label="RA"
+                          disabled
+                          v-model="student.ra"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
                           label="Nome"
                           :rules="rules"
                           v-model="student.name"
@@ -105,13 +115,27 @@
                           v-model="student.email"
                         ></v-text-field>
                       </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="CPF"
+                          disabled
+                          v-model="student.cpf"
+                        ></v-text-field>
+                      </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
 
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="dialogEdit = false">
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="
+                      dialogEdit = false;
+                      clearFields();
+                    "
+                  >
                     Cancelar
                   </v-btn>
                   <v-btn color="blue darken-1" text @click="saveEdit">
@@ -192,6 +216,12 @@ export default {
           alert("erro:" + err);
         });
     },
+    clearFields() {
+      this.student.ra = "";
+      this.student.name = "";
+      this.student.email = "";
+      this.student.cpf = "";
+    },
     saveCreate() {
       api
         .post("/create", {
@@ -204,6 +234,7 @@ export default {
           this.dialogCreate = false;
           alert("Salvo com sucesso!");
           this.fetchItems();
+          this.clearFields();
         })
         .catch((err) => {
           alert("erro:" + err);
@@ -212,8 +243,10 @@ export default {
     openEdit(item) {
       this.dialogEdit = true;
       this.student.id = item.id;
+      this.student.ra = item.ra;
       this.student.name = item.name;
       this.student.email = item.email;
+      this.student.cpf = item.cpf;
     },
     saveEdit() {
       api
