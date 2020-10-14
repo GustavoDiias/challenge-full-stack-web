@@ -1,4 +1,5 @@
 Execução do Projeto:
+
     -Back End:
         yarn install
         yarn sequelize db:migrate
@@ -9,6 +10,7 @@ Execução do Projeto:
         yarn serve
 
 Decisão da arquitetura utilizada:
+
     Arquitetura MVC
     Front End: Vuetifyjs como framework de UI
     API: Express e NodeJS
@@ -16,6 +18,7 @@ Decisão da arquitetura utilizada:
     Idioma de escrita do código: Inglês 
 
 Lista de bibliotecas de terceiros utilizadas:
+
     -Back End:
         body-parser
         cors
@@ -36,9 +39,11 @@ Lista de bibliotecas de terceiros utilizadas:
         vuetify
 
 O que você melhoraria se tivesse mais tempo:
+
     A qualidade visual do Front-End.
     Maior número de páginas e um sistema de busca de estudante.
     Aumentava a componentização do Front-end
 
 Quais requisitos obrigatórios que não foram entregues:
+
     Creio que todos os requisitos foram entregues.
